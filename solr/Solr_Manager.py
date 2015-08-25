@@ -1,10 +1,11 @@
 from __future__ import print_function
 import pysolr
 import re
+import sys
 
 # Importing abstract layer
 sys.path.insert(0, '../abstraction')
-import AbstractManager
+from Abstract_Manager import AbstractManager
 
 
 """
@@ -12,13 +13,27 @@ import AbstractManager
 """
 class SolrManager(AbstractManager):
     
-    # Private instance of our solr database
-    _solrLocal
+    
+    def _create_instance(self):
+        """
+            It tries to create a new instance of solr database.
+            * Returns current solr instance. None if there was any problem creating it.           
+        """
+        
+        # global _solrLocal       # instance of our solr database
+
+        try:
+            self._solrLocal = pysolr.Solr(self.getUrl(), self.getTimeout())
+        except Exception as e:
+            print ("Exception trying to access Solr instance:")
+            print (e)
+            self._solrLocal =  None 
+    
     
     def __init__(self):
         self.url = 'http://localhost:8983/solr/eventsData'
         self.timeout = 10
-        _create_instance()
+        self._create_instance()
     
     #def __init__(self, url, timeout):
     #    self.url = name
@@ -34,36 +49,24 @@ class SolrManager(AbstractManager):
         return "%s is a %i" % (self.url, self.timeout)
     
     
-    def _create_instance():
-        """
-            It tries to create a new instance of solr database.
-            * Returns current solr instance. None if there was any problem creating it.           
-        """
-        
-        try:
-            _solrLocal = pysolr.Solr(getUrl(), getTimeout())
-        except Exception:
-            print ("Exception trying to access Solr instance")
-            _solrLocal =  None 
     
-    
-    def get_instance():
+    def get_instance(self):
         """
             Returns the singleton instance of solr database.
             NOT RECOMMENDED: only this class functionality should be used. It allows specific solr DB operations.
             * Returns current specific solr controller. None if there is any problem creating it.           
         """
         
-        if (_solrLocal is None):
-            _create_instance()
+        if (self._solrLocal is None):
+            self._create_instance()
             
-        return _solrLocal
+        return self._solrLocal
     
     
     
     # BASIC OPERATIONS
     
-    def get_all_data():
+    def get_all_data(self):
         """
             Makes a Request to the Solr Server from "localhost"
                 * solrLocal {class} url - Uniform Resource Locator
@@ -71,25 +74,40 @@ class SolrManager(AbstractManager):
                     "q='*:*'" - Query all the data;
                     "rows='5000'" - Indicates the maximum number of events that will be returned;
         """
-        resultsLocal = solrLocal.search(q='*:*', rows='5000')
+        my_instance = self.get_instance()
+        if my_instance is not None:
+            try:
+                resultsLocal = my_instance.search(q='*:*', rows='5000')
+                return resultsLocal
+            except Exception as e:
+                print ("Exception trying to get Solr data")
+                print (e)
+                return None
+        else:
+            return None
     
     
-    def delete_all_data():
+    def delete_all_data(self):
         """
             Delete all the data from DB
         """
-        
-        solrLocal.solrLocal.delete(q='*:*')
+        my_instance = self.get_instance()
+        if my_instance is not None:
+            try:
+                my_instance.delete(q='*:*')
+            except Exception as e:
+                print ("Exception trying to delete Solr data")
+                print (e)
     
     
-    def insert_data(var):
+    def insert_data(mydata):
         """
-            Adds to our database all variables passed as arguments"
-            * var {list} 
+            Adds to our database all variables passed as arguments
+            * mydata {list} 
         """
         
         solrLocal.add([
-            vars
+            mydata
         ])
     
     
@@ -101,6 +119,7 @@ def example():
         Executes one example showing all data from our solr DB.
         
     """
+    from SolrManager import SolrManager
     solrmanager = SolrManager()
     ourdata = solrmanager.get_all_data()
     print (ourdata)
