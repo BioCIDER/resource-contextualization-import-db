@@ -4,7 +4,11 @@ import re
 import sys
 
 # Importing specific DB managers
-sys.path.insert(0, '../solr')
+# It's better to use references from root to avoid problems when the script is used from another module
+#sys.path.insert(0, '../solr')
+sys.path.insert(0, '../../resource-contextualization-import-db/solr')
+
+
 from Solr_Manager import SolrManager
 
 """
@@ -25,7 +29,7 @@ class DBFactory(object):
         return "DBFactory, current DB: %s" % (_INSTANCE_TYPE)
     
         
-    def get_db_manager(self,DB_TYPE):
+    def get_specific_db_manager(self,DB_TYPE):
         """
             Returns one instance of a database manager. None if there is any problem creating it.
             * {AbstractManager} Return asked DB manager.
@@ -43,7 +47,7 @@ class DBFactory(object):
             * {AbstractManager} Return current DB manager.
         """  
         
-        return self.get_db_manager(_INSTANCE_TYPE)
+        return self.get_specific_db_manager(_INSTANCE_TYPE)
        
        
     

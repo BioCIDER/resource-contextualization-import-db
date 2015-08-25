@@ -4,7 +4,9 @@ import re
 import sys
 
 # Importing abstract layer
-sys.path.insert(0, '../abstraction')
+#sys.path.insert(0, '../abstraction')
+sys.path.insert(0, '../../resource-contextualization-import-db/abstraction')
+
 from Abstract_Manager import AbstractManager
 
 
@@ -46,7 +48,7 @@ class SolrManager(AbstractManager):
         return self.timeout
 
     def __str__(self):
-        return "%s is a %i" % (self.url, self.timeout)
+        return "%s with timeout of %i" % (self.url, self.timeout)
     
     
     
@@ -69,15 +71,31 @@ class SolrManager(AbstractManager):
     def get_all_data(self):
         """
             Makes a Request to the Solr Server from "localhost"
-                * solrLocal {class} url - Uniform Resource Locator
-                * resultsLocal {class} Query operator:
-                    "q='*:*'" - Query all the data;
-                    "rows='5000'" - Indicates the maximum number of events that will be returned;
+                * {list} Return results.
         """
         my_instance = self.get_instance()
         if my_instance is not None:
-            try:
+            try:                
                 resultsLocal = my_instance.search(q='*:*', rows='5000')
+                return resultsLocal
+            except Exception as e:
+                print ("Exception trying to get Solr data")
+                print (e)
+                return None
+        else:
+            return None
+        
+    
+    def get_data_by(self, condition):
+        """
+            Makes a Request to the local Solr Server with some condition. 
+                * condition {string} condition of all results to be obtained
+                * {list} Return results.
+        """
+        my_instance = self.get_instance()
+        if my_instance is not None:
+            try:                
+                resultsLocal = my_instance.search(q=condition, rows='5000')
                 return resultsLocal
             except Exception as e:
                 print ("Exception trying to get Solr data")
@@ -100,15 +118,21 @@ class SolrManager(AbstractManager):
                 print (e)
     
     
-    def insert_data(mydata):
+    def insert_data(self, mydata):
         """
             Adds to our database all variables passed as arguments
             * mydata {list} 
         """
-        
-        solrLocal.add([
-            mydata
-        ])
+        my_instance = self.get_instance()
+        if my_instance is not None:
+            try:
+                my_instance.add([
+                    mydata
+                ])
+            except Exception as e:
+                print ("Exception trying to inser Solr data")
+                print (e)
+    
     
     
     
@@ -121,7 +145,8 @@ def example():
     """
     from SolrManager import SolrManager
     solrmanager = SolrManager()
-    ourdata = solrmanager.get_all_data()
+    # ourdata = solrmanager.get_all_data()
+    ourdata = solrmanager.get_data_by('disease')
     print (ourdata)
 
 

@@ -31,9 +31,17 @@ class AbstractManager(object):
     @abstractmethod 
     def get_all_data(self):
         """
-            Get all data from DB. It should be improved.
+            Get all data from DB. IT SHOULD BE FIXED.
         """
         pass
+    
+    @abstractmethod 
+    def get_data_by(self, condition):
+        """
+            Get data from DB with some condition.
+        """
+        pass
+    
             
     @abstractmethod 
     def delete_all_data(self):
@@ -43,7 +51,7 @@ class AbstractManager(object):
         pass
           
     @abstractmethod 
-    def insert_data(var):
+    def insert_data(self, var):
         """
             Adds to our database all variables passed as arguments
             * var {list} 
