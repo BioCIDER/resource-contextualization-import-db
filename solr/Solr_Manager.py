@@ -63,7 +63,8 @@ class SolrManager(AbstractManager):
     def _get_instance(self):
         """
             Returns the singleton instance of solr database.
-            NOT RECOMMENDED: only this class functionality should be used. It allows specific solr DB operations.
+            NOT RECOMMENDED: It allows specific solr DB operations, to use in very specific situations.
+            You should use normal CRUD functionality available in this class instead. 
             * Returns current specific solr controller. None if there is any problem creating it.           
         """
         
@@ -96,7 +97,7 @@ class SolrManager(AbstractManager):
     
     def _get_data_by(self, condition):
         """
-            Makes a Request to the local Solr Server with some condition.
+            Makes a Request to the local Solr Server with some free condition.
             NOT RECOMMENDED.
                 * condition {string} condition of all results to be obtained
                 * {list} Return results.
