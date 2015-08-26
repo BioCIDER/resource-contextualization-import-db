@@ -22,10 +22,9 @@ class SolrManager(AbstractManager):
             * Returns current solr instance. None if there was any problem creating it.           
         """
         
-        # global _solrLocal       # instance of our solr database
-
         try:
-            self._solrLocal = pysolr.Solr(self.getUrl(), self.getTimeout())
+            self._solrLocal = pysolr.Solr(self.getUrl(), timeout=self.getTimeout())
+
         except Exception as e:
             print ("Exception trying to access Solr instance:")
             print (e)
@@ -84,8 +83,8 @@ class SolrManager(AbstractManager):
         """
         my_instance = self._get_instance()
         if my_instance is not None:
-            try:                
-                resultsLocal = my_instance.search(q='*:*', rows='5000')
+            try:
+                resultsLocal = my_instance.search(q='*:*')
                 return resultsLocal
             except Exception as e:
                 print ("Exception trying to get Solr data")
@@ -140,7 +139,7 @@ class SolrManager(AbstractManager):
                     mydata
                 ])
             except Exception as e:
-                print ("Exception trying to inser Solr data")
+                print ("Exception trying to insert Solr data")
                 print (e)
     
     
