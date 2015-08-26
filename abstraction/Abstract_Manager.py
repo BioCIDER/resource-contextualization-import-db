@@ -17,7 +17,7 @@ class AbstractManager(object):
        
            
     @abstractmethod 
-    def get_instance(self):
+    def _get_instance(self):
         """
             Returns the singleton instance of the database.
             NOT RECOMMENDED. It allows specific supplier DB operations.
@@ -36,9 +36,10 @@ class AbstractManager(object):
         pass
     
     @abstractmethod 
-    def get_data_by(self, condition):
+    def _get_data_by(self, condition):
         """
-            Get data from DB with some condition.
+            Get data from DB with some free condition.
+            NOT RECOMMENDED. It allows specific supplier DB operations.
         """
         pass
     
