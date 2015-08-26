@@ -32,10 +32,19 @@ class SolrManager(AbstractManager):
             self._solrLocal =  None 
     
     
-    def __init__(self):
-        self.url = 'http://localhost:8983/solr/eventsData'
+    def __init__(self, ds_name):
+        """
+            Initialization function.
+            * db_name {string} specific core name to use. None to use default.
+        """
+        
+        if ds_name is None:
+            self.url = 'http://localhost:8983/solr/eventsData'
+        else:
+            self.url = 'http://localhost:8983/solr/'+ds_name
         self.timeout = 10
         self._create_instance()
+    
     
     #def __init__(self, url, timeout):
     #    self.url = name
@@ -52,7 +61,7 @@ class SolrManager(AbstractManager):
     
     
     
-    def get_instance(self):
+    def _get_instance(self):
         """
             Returns the singleton instance of solr database.
             NOT RECOMMENDED: only this class functionality should be used. It allows specific solr DB operations.
@@ -73,7 +82,7 @@ class SolrManager(AbstractManager):
             Makes a Request to the Solr Server from "localhost"
                 * {list} Return results.
         """
-        my_instance = self.get_instance()
+        my_instance = self._get_instance()
         if my_instance is not None:
             try:                
                 resultsLocal = my_instance.search(q='*:*', rows='5000')
@@ -86,13 +95,14 @@ class SolrManager(AbstractManager):
             return None
         
     
-    def get_data_by(self, condition):
+    def _get_data_by(self, condition):
         """
-            Makes a Request to the local Solr Server with some condition. 
+            Makes a Request to the local Solr Server with some condition.
+            NOT RECOMMENDED.
                 * condition {string} condition of all results to be obtained
                 * {list} Return results.
         """
-        my_instance = self.get_instance()
+        my_instance = self._get_instance()
         if my_instance is not None:
             try:                
                 resultsLocal = my_instance.search(q=condition, rows='5000')
@@ -109,7 +119,7 @@ class SolrManager(AbstractManager):
         """
             Delete all the data from DB
         """
-        my_instance = self.get_instance()
+        my_instance = self._get_instance()
         if my_instance is not None:
             try:
                 my_instance.delete(q='*:*')
@@ -123,7 +133,7 @@ class SolrManager(AbstractManager):
             Adds to our database all variables passed as arguments
             * mydata {list} 
         """
-        my_instance = self.get_instance()
+        my_instance = self._get_instance()
         if my_instance is not None:
             try:
                 my_instance.add([

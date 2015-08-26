@@ -29,25 +29,41 @@ class DBFactory(object):
         return "DBFactory, current DB: %s" % (_INSTANCE_TYPE)
     
         
+             
     def get_specific_db_manager(self,DB_TYPE):
         """
+            Returns one instance of a database manager pointing to the default dataset/database.
+            None if there is any problem creating it.
+            * DB_TYPE {string} one of the DB suppliers included in _DB_TYPES.
+            * {AbstractManager} Return asked DB manager.
+        """
+        
+        return get_specific_db_manager(self,DB_TYPE,None)
+      
+        
+    def get_specific_db_manager(self,DB_TYPE,ds_name):
+        """
             Returns one instance of a database manager. None if there is any problem creating it.
+            * DB_TYPE {string} one of the DB suppliers included in _DB_TYPES.
+            * db_name {string} specific database name to use. None to use default.
             * {AbstractManager} Return asked DB manager.
         """        
 
         if DB_TYPE == _DB_TYPES[0]:
-            return SolrManager()
+            return SolrManager(ds_name)
         else:
             return None   
     
     
-    def get_my_db_manager(self):
+    def get_default_db_manager(self, ds_name):
         """
-            Returns one instance of our current database manager. None if there is any problem creating it.
+            Returns one instance of our current database manager pointing to one specific dataset/database.
+            None if there is any problem creating it.
+            * ds_name {string} specific database name to use. None to use default.
             * {AbstractManager} Return current DB manager.
         """  
         
-        return self.get_specific_db_manager(_INSTANCE_TYPE)
+        return self.get_specific_db_manager(_INSTANCE_TYPE, ds_name)
        
        
     
