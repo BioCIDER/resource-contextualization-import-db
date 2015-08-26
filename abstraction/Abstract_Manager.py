@@ -19,9 +19,10 @@ class AbstractManager(object):
     @abstractmethod 
     def _get_instance(self):
         """
-            Returns the singleton instance of the database.
-            NOT RECOMMENDED. It allows specific supplier DB operations.
-            * Returns current specific DB controller. None if there is any problem creating it.           
+            Returns the singleton instance of specific DB.
+            NOT RECOMMENDED: It allows specific DB provider operations, to use in very specific situations.
+            You should use normal CRUD functionality available in this class instead. 
+            * Returns current specific DB instance. None if there is any problem creating it.           
         """
         pass
         
@@ -31,7 +32,7 @@ class AbstractManager(object):
     @abstractmethod 
     def get_all_data(self):
         """
-            Get all data from DB. IT SHOULD BE FIXED.
+            Get all data from DB.
         """
         pass
     
