@@ -74,6 +74,81 @@ class SolrManager(AbstractManager):
         return self._solrLocal
     
     
+       
+    def _get_solr_condition(self, condition):
+        """
+            Transforms one standard condition to one SolR condition.
+                * condition {list} one stantard condition
+                * {string} Solr condition.
+        """
+        solr_condition = ''
+        if condition is not None:
+            try:
+                print ('Condition: ')
+                print (condition)
+                
+                if condition[0] == self.OPERATORS[0]:     # EQ
+                    solr_condition = condition[1]+':"'+condition[2]+'"'
+                elif condition[0] == self.OPERATORS[1]:   # NO
+                    solr_condition = 'NOT ('+condition[1]+': "'+condition[2]+'")'
+                elif condition[0] == self.OPERATORS[2]:   # AND
+                    solr_condition = '('+self._get_solr_conditions(condition[1])+')'
+                elif condition[0] == self.OPERATORS[3]:   # OR
+                    solr_condition = '('+self._get_solr_conditions_by_parent_condition(condition[1],condition)+')'    
+                    
+                print ('solr_condition: ')
+                print (solr_condition)
+                return solr_condition
+            except Exception as e:
+                print ("Exception trying to convert one standard condition to SolR condition")
+                print (e)
+                return None
+        else:
+            return '*:*'
+        
+    
+    def _get_solr_conditions(self, conditions):
+        return self._get_solr_conditions_by_parent_condition(conditions, None)
+        
+    def _get_solr_conditions_by_parent_condition(self, conditions, parent_condition):
+        """
+            Transforms standard conditions to SolR conditions.
+                * conditions {list} conditions to all results to be obtained
+                * parent_condition {list}  parent condition can influences how its children are concatenated
+                * {string} Solr conditions.
+        """
+        solr_total_condition = ''
+        if conditions is not None:
+            try:
+                
+                for condition in conditions:
+                    print ('condition in loop:')
+                    print(condition)
+                    new_solr_condition = self._get_solr_condition(condition)
+                    operator = ''
+                    if len(solr_total_condition)>1:     # If solr_total_condition already has some condition...
+                        if parent_condition is not None:
+                            if parent_condition[0] == self.OPERATORS[3]:   # OR
+                                operator = ' OR '
+                                
+                        if len(operator)==0:        
+                            # Depending on what is the next operator, we can need to join it with other auxiliar operator...
+                            if condition[0] == self.OPERATORS[0]:    # EQ
+                                operator = ' AND '
+                        
+                        
+                    solr_total_condition = solr_total_condition+' '+operator+' '+new_solr_condition
+                    solr_total_condition = solr_total_condition.strip()
+                    
+                print('Final solr conditions:')
+                print(solr_total_condition)
+                return solr_total_condition
+            except Exception as e:
+                print ("Exception trying to convert standard conditions to SolR conditions")
+                print (e)
+                return None
+        else:
+            return '*:*'
     
     # BASIC OPERATIONS
     
@@ -93,6 +168,45 @@ class SolrManager(AbstractManager):
                 return None
         else:
             return None
+        
+    
+    
+    def get_data_by_conditions(self, conditions):
+        return self.get_data_by_conditions_full(self, conditions, None, 5000)
+    
+    def get_data_by_conditions_sorting(self, conditions, sorting_rule):
+        return self.get_data_by_conditions_full(self, conditions, sorting_rule ,5000)
+       
+    def get_data_by_conditions_full(self, conditions, sorting_rule, maxRows):
+        """
+            Makes a Request to the local Solr Server with a list of conditions.
+                * conditions {list} conditions to all results to be obtained
+                * sorting_rules {list} field and direction of sorting results
+                * maxRows {int} maximum number of results to be obtained
+                * {list} Return results.
+        """
+        my_instance = self._get_instance()
+        if my_instance is not None:
+            try:
+                print('> get data by conditions full:')
+                print(conditions)
+                
+                solr_conditions = self._get_solr_conditions(conditions)               
+                print('solr conditions to apply:')
+                print(solr_conditions)
+                if maxRows is not None:
+                    resultsLocal = my_instance.search(q=solr_conditions, rows=str(maxRows))
+                else:
+                    resultsLocal = my_instance.search(q=solr_conditions)
+                return resultsLocal
+            except Exception as e:
+                print ("Exception trying to get Solr data")
+                print (e)
+                return None
+        else:
+            return None
+        
+    
         
     
     def _get_data_by(self, condition):

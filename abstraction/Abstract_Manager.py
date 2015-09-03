@@ -7,7 +7,9 @@ from abc import ABCMeta, abstractmethod
 class AbstractManager(object):
     
     __metaclass__ = ABCMeta
-
+    
+    OPERATORS = 'EQ','NO','AND','OR'
+    
     @abstractmethod    
     def __init__(self): pass
     
@@ -35,6 +37,40 @@ class AbstractManager(object):
             Get all data from DB.
         """
         pass
+    
+    
+    @abstractmethod 
+    def get_data_by_conditions(self, conditions):
+        """
+            Makes a Request to the DB manager with a list of conditions.
+            Returns an unsorted and limited amount of results defined by the specific DB manager.
+                * conditions {list} conditions to all results to be obtained
+                * {list} Return results.
+        """
+        pass
+    
+    @abstractmethod 
+    def get_data_by_conditions_sorting(self, conditions, sorting_rules):
+        """
+            Makes a Request to the DB manager with a list of conditions and sorting rules.
+            Returns a limited amount of results defined by the specific DB manager.
+                * conditions {list} conditions to all results to be obtained
+                * sorting_rules {list} field and direction of sorting results
+                * {list} Return results.
+        """
+        pass
+        
+    @abstractmethod 
+    def get_data_by_conditions_full(self, conditions, sorting_rules, maxRows):
+        """
+            Makes a Request to the DB manager with a list of conditions, sorting rules and maximum number of results 
+                * conditions {list} conditions to all results to be obtained
+                * sorting_rules {list} field and direction of sorting results
+                * maxRows {int} maximum number of results to be obtained
+                * {list} Return results.
+        """
+        pass
+        
     
     @abstractmethod 
     def _get_data_by(self, condition):
