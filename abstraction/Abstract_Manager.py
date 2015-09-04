@@ -87,6 +87,14 @@ class AbstractManager(object):
             Delete all the data from DB
         """
         pass
+    
+    @abstractmethod 
+    def delete_data_by_conditions(self, conditions):
+        """
+            Executes a delete statement to the DB manager with a list of conditions.
+                * conditions {list} conditions imposed to all rows to be deleted
+        """
+        pass
           
     @abstractmethod 
     def insert_data(self, var):

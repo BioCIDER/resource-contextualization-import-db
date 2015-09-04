@@ -36,6 +36,46 @@ class TestSolrDB(unittest.TestCase):
         self.assertEqual(0, self.new_count)
 
 
+    
+    def test_delete(self):
+        print ('> Select test')
+        self.dbManager.delete_all_data()       
+        self.dbManager.insert_data({'title':'first test title','field':'test-field'})
+        self.dbManager.insert_data({'title':'second test title','field':'test-field'})
+        self.dbManager.insert_data({'title':'third test title','field':'test-field'})
+        self.previous_count = len(self.dbManager.get_all_data())       
+        print ('previous count: %i' % (self.previous_count))
+        self.assertEqual(3, self.previous_count)
+        
+        self.dbManager.delete_data_by_conditions([['EQ','title','first test title']])
+        self.new_count = len(self.dbManager.get_all_data())
+        print ('new count: %i' % (self.new_count) )
+        self.assertEqual(2, self.new_count)
+        
+        
+        self.dbManager.delete_data_by_conditions(
+            [
+                ['OR',
+                    [
+                        ['AND',[
+                                ['EQ','field','test-field'],
+                                ['EQ','title','second test title']
+                               ]
+                        ],
+                        ['AND',[
+                                ['EQ','field','test-field'],
+                                ['EQ','title','first test title']
+                               ]
+                        ]
+                    ]
+                ]
+            ])
+        self.new_count = len(self.dbManager.get_all_data())
+        print ('new count: %i' % (self.new_count) )
+        self.assertEqual(1, self.new_count)
+        
+
+
     def test_select(self):
         print ('> Select test')
         self.dbManager.delete_all_data()       
@@ -115,6 +155,8 @@ class TestSolrDB(unittest.TestCase):
         print ('new count: %i' % (self.new_count) )
         self.assertEqual(2, self.new_count)
         
+        
+    # WE ALSO NEED TO DO A LOT OF TEST WITH CONDITIONS AND DELETIONS
     
 
 if __name__ == '__main__':
