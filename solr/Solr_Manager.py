@@ -2,9 +2,9 @@ from __future__ import print_function
 import pysolr
 import re
 import sys
+import logging
 
 # Importing abstract layer
-#sys.path.insert(0, '../abstraction')
 sys.path.insert(0, '../../resource-contextualization-import-db/abstraction')
 
 from Abstract_Manager import AbstractManager
@@ -26,8 +26,8 @@ class SolrManager(AbstractManager):
             self._solrLocal = pysolr.Solr(self.getUrl(), timeout=self.getTimeout())
 
         except Exception as e:
-            print ("Exception trying to access Solr instance:")
-            print (e)
+            self.logger.critical("Exception trying to access Solr instance:")
+            self.logger.critical(e)
             self._solrLocal =  None 
     
     
@@ -36,7 +36,7 @@ class SolrManager(AbstractManager):
             Initialization function.
             * db_name {string} specific core name to use. None to use default.
         """
-        
+        super(SolrManager, self).__init__()
         if ds_name is None:
             self.url = 'http://localhost:8983/solr/eventsData'
         else:
@@ -80,8 +80,8 @@ class SolrManager(AbstractManager):
         solr_condition = ''
         if condition is not None:
             try:
-                print ('Condition: ')
-                print (condition)
+                self.logger.debug ('Condition: ')
+                self.logger.debug (condition)
                 # WE HAVE TO SEE IF EQ, NO OR OTHERS CAN HAVE MORE CONDITIONS INSIDE THEM
                 if condition[0] == self.OPERATORS[0]:     # EQ      It will never have more conditions inside
                     solr_condition = condition[1]+':"'+condition[2]+'"'
@@ -97,12 +97,12 @@ class SolrManager(AbstractManager):
                 elif condition[0] == self.OPERATORS[3]:   # OR.     It will have always more conditions inside
                     solr_condition = '('+self._get_solr_conditions_by_parent_condition(condition[1],condition)+')'    
                     
-                print ('solr_condition: ')
-                print (solr_condition)
+                self.logger.debug ('solr_condition: ')
+                self.logger.debug (solr_condition)
                 return solr_condition
             except Exception as e:
-                print ("Exception trying to convert one standard condition to SolR condition")
-                print (e)
+                self.logger.error("Exception trying to convert one standard condition to SolR condition")
+                self.logger.error(e)
                 return None
         else:
             return '*:*'
@@ -123,8 +123,8 @@ class SolrManager(AbstractManager):
             try:
                 
                 for condition in conditions:
-                    print ('condition in loop:')
-                    print(condition)
+                    self.logger.debug ('condition in loop:')
+                    self.logger.debug(condition)
                     new_solr_condition = self._get_solr_condition(condition)
                     operator = ''
                     if len(solr_total_condition)>1:     # If solr_total_condition already has some condition...
@@ -143,8 +143,8 @@ class SolrManager(AbstractManager):
                     solr_total_condition = solr_total_condition+' '+operator+' '+new_solr_condition
                     solr_total_condition = solr_total_condition.strip()
                     
-                print('Final solr conditions:')
-                print(solr_total_condition)
+                self.logger.debug('Final solr conditions:')
+                self.logger.debug(solr_total_condition)
                 return solr_total_condition
             except Exception as e:
                 print ("Exception trying to convert standard conditions to SolR conditions")
@@ -196,8 +196,8 @@ class SolrManager(AbstractManager):
                 resultsLocal = my_instance.search(q='*:*')
                 return resultsLocal.docs
             except Exception as e:
-                print ("Exception trying to get Solr data")
-                print (e)
+                self.logger.error("Exception trying to get Solr data")
+                self.logger.error(e)
                 return None
         else:
             return None
@@ -232,12 +232,12 @@ class SolrManager(AbstractManager):
         my_instance = self._get_instance()
         if my_instance is not None:
             try:
-                print('> get data by conditions full:')
-                print(conditions)
+                self.logger.debug('> get data by conditions full:')
+                self.logger.debug(conditions)
                 
                 solr_conditions = self._get_solr_conditions(conditions)               
-                print('solr conditions to apply:')
-                print(solr_conditions)
+                self.logger.debug('solr conditions to apply:')
+                self.logger.debug(solr_conditions)
                 
                 solr_rules = self._get_solr_sorting_rules(sorting_rules)
                 if solr_rules is None:                   
@@ -249,8 +249,8 @@ class SolrManager(AbstractManager):
                     resultsLocal = my_instance.search(q=solr_conditions, sort=solr_rules)
                 return resultsLocal.docs
             except Exception as e:
-                print ("Exception trying to get Solr data")
-                print (e)
+                self.logger.error("Exception trying to get Solr data")
+                self.logger.error(e)
                 return None
         else:
             return None
@@ -271,8 +271,8 @@ class SolrManager(AbstractManager):
                 resultsLocal = my_instance.search(q=condition, rows='5000')
                 return resultsLocal
             except Exception as e:
-                print ("Exception trying to get Solr data")
-                print (e)
+                self.logger.error("Exception trying to get Solr data")
+                self.logger.error(e)
                 return None
         else:
             return None
@@ -288,8 +288,8 @@ class SolrManager(AbstractManager):
             try:
                 my_instance.delete(q='*:*')
             except Exception as e:
-                print ("Exception trying to delete Solr data")
-                print (e)
+                self.logger.error("Exception trying to delete Solr data")
+                self.logger.error(e)
              
                 
                 
@@ -303,17 +303,17 @@ class SolrManager(AbstractManager):
         if my_instance is not None:
             try:
                                 
-                print('> get data by conditions full:')
-                print(conditions)
+                self.logger.debug('> get data by conditions full:')
+                self.logger.debug(conditions)
                 
                 solr_conditions = self._get_solr_conditions(conditions)               
-                print('solr conditions to apply:')
-                print(solr_conditions)
+                self.logger.debug('solr conditions to apply:')
+                self.logger.debug(solr_conditions)
         
                 my_instance.delete(q=solr_conditions)
             except Exception as e:
-                print ("Exception trying to delete Solr data")
-                print (e)
+                self.logger.error("Exception trying to delete Solr data")
+                self.logger.error(e)
         
     
     
@@ -329,8 +329,8 @@ class SolrManager(AbstractManager):
                     mydata
                 ])
             except Exception as e:
-                print ("Exception trying to insert Solr data")
-                print (e)
+                self.logger.error("Exception trying to access Solr instance:")
+                self.logger.error(e)
     
     
     

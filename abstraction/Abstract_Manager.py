@@ -1,5 +1,6 @@
 
 from abc import ABCMeta, abstractmethod
+import logging
 
 """
     Abstract class that must be implemented by all specific DataBase managers to support its interface.
@@ -11,9 +12,16 @@ class AbstractManager(object):
     OPERATORS = 'EQ','NO','AND','OR'
     SORTING = 'DESC','ASC'
     
+    logger = None
     
-    @abstractmethod    
-    def __init__(self): pass
+    
+    @abstractmethod       
+    def __init__(self):
+        logging.basicConfig(level=logging.ERROR)        
+        self.logger = logging.getLogger('db_logs')
+        self.logger.addHandler(logging.StreamHandler())
+        
+        pass
     
     
     @abstractmethod    

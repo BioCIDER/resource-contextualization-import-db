@@ -44,12 +44,12 @@ class TestSolrDB(unittest.TestCase):
         self.dbManager.insert_data({'title':'second test title','field':'test-field'})
         self.dbManager.insert_data({'title':'third test title','field':'test-field'})
         self.previous_count = len(self.dbManager.get_all_data())       
-        print ('previous count: %i' % (self.previous_count))
+        # print ('previous count: %i' % (self.previous_count))
         self.assertEqual(3, self.previous_count)
         
         self.dbManager.delete_data_by_conditions([['EQ','title','first test title']])
         self.new_count = len(self.dbManager.get_all_data())
-        print ('new count: %i' % (self.new_count) )
+        # print ('new count: %i' % (self.new_count) )
         self.assertEqual(2, self.new_count)
         
         
@@ -71,7 +71,7 @@ class TestSolrDB(unittest.TestCase):
                 ]
             ])
         self.new_count = len(self.dbManager.get_all_data())
-        print ('new count: %i' % (self.new_count) )
+        # print ('new count: %i' % (self.new_count) )
         self.assertEqual(1, self.new_count)
         
 
@@ -83,31 +83,31 @@ class TestSolrDB(unittest.TestCase):
         self.dbManager.insert_data({'title':'second test title','field':'test-field'})
         self.dbManager.insert_data({'title':'third test title','field':'test-field'})
         self.previous_count = len(self.dbManager.get_all_data())       
-        print ('previous count: %i' % (self.previous_count))
+        # print ('previous count: %i' % (self.previous_count))
         self.assertEqual(3, self.previous_count)
         
         self.new_count = len(self.dbManager.get_data_by_conditions_full([['EQ','title','first test title']], None, None))
-        print ('new count: %i' % (self.new_count) )
+        # print ('new count: %i' % (self.new_count) )
         self.assertEqual(1, self.new_count)
         
         self.new_count = len(self.dbManager.get_data_by_conditions_full([['EQ','field','test-field']], None, None))
-        print ('new count: %i' % (self.new_count) )
+        # print ('new count: %i' % (self.new_count) )
         self.assertEqual(3, self.new_count)
         
         self.new_count = len(self.dbManager.get_data_by_conditions_full([['NO','title','second test title']], None, None))
-        print ('new count: %i' % (self.new_count) )
+        # print ('new count: %i' % (self.new_count) )
         self.assertEqual(2, self.new_count)
         
         self.new_count = len(self.dbManager.get_data_by_conditions_full([['EQ','field','test-field'], ['EQ','title','second test title']], None, None))
-        print ('new count: %i' % (self.new_count) )
+        # print ('new count: %i' % (self.new_count) )
         self.assertEqual(1, self.new_count)
         
         self.new_count = len(self.dbManager.get_data_by_conditions_full([['EQ','field','test-field'], ['NO','title','second test title']], None, None))
-        print ('new count: %i' % (self.new_count) )
+        # print ('new count: %i' % (self.new_count) )
         self.assertEqual(2, self.new_count)
         
         self.new_count = len(self.dbManager.get_data_by_conditions_full([['EQ','field','test-field'], ['EQ','title','second test title']], None, None))
-        print ('new count: %i' % (self.new_count) )
+        # print ('new count: %i' % (self.new_count) )
         self.assertEqual(1, self.new_count)
         
         self.new_count = len(self.dbManager.get_data_by_conditions_full(
@@ -118,7 +118,7 @@ class TestSolrDB(unittest.TestCase):
                        ]
                 ]
             ], None, None))
-        print ('new count: %i' % (self.new_count) )
+        # print ('new count: %i' % (self.new_count) )
         self.assertEqual(1, self.new_count)
         
         
@@ -131,7 +131,7 @@ class TestSolrDB(unittest.TestCase):
                     ]
                 ]
             ], None, None))
-        print ('new count: %i' % (self.new_count) )
+        # print ('new count: %i' % (self.new_count) )
         self.assertEqual(3, self.new_count)
         
         
@@ -152,7 +152,7 @@ class TestSolrDB(unittest.TestCase):
                     ]
                 ]
             ], None, None))
-        print ('new count: %i' % (self.new_count) )
+        # print ('new count: %i' % (self.new_count) )
         self.assertEqual(2, self.new_count)
         
         
@@ -177,22 +177,18 @@ class TestSolrDB(unittest.TestCase):
                     ]
                 ]
             ], None, None))
-        print ('new count: %i' % (self.new_count) )
+        # print ('new count: %i' % (self.new_count) )
         self.assertEqual(1, self.new_count)
         
         
         
         # Testing sorting rules...
         sorted_results = self.dbManager.get_data_by_conditions_full([['EQ','field','test-field']], [['title','ASC']], None)
-        print ('sorted_results')
-        print (sorted_results)      
         first_sorted_result = sorted_results[0]                         
         self.assertEqual(3, len(sorted_results))
         self.assertEqual('first test title', first_sorted_result['title'])
         
         sorted_results = self.dbManager.get_data_by_conditions_full([['EQ','field','test-field']], [['title','DESC']], None)
-        print ('sorted_results')
-        print (sorted_results)       
         first_sorted_result = sorted_results[0]                       
         self.assertEqual(3, len(sorted_results))
         self.assertEqual('third test title', first_sorted_result['title'])
