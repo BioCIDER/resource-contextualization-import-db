@@ -155,7 +155,34 @@ class TestSolrDB(unittest.TestCase):
         print ('new count: %i' % (self.new_count) )
         self.assertEqual(2, self.new_count)
         
-        # Testing sorting conditions...
+        
+        self.new_count = len(self.dbManager.get_data_by_conditions_full(
+            [
+                ['OR',
+                    [
+                        ['NO',
+                            [
+                                ['AND',[
+                                    ['EQ','field','test-field'],
+                                    ['EQ','title','second test title']
+                                    ]
+                                ]
+                            ]
+                        ],
+                        ['AND',[
+                                ['EQ','field','test-field'],
+                                ['EQ','title','first test title']
+                               ]
+                        ]
+                    ]
+                ]
+            ], None, None))
+        print ('new count: %i' % (self.new_count) )
+        self.assertEqual(1, self.new_count)
+        
+        
+        
+        # Testing sorting rules...
         sorted_results = self.dbManager.get_data_by_conditions_full([['EQ','field','test-field']], [['title','ASC']], None)
         print ('sorted_results')
         print (sorted_results)      

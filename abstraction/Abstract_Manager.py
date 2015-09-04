@@ -57,7 +57,7 @@ class AbstractManager(object):
             Makes a Request to the DB manager with a list of conditions and sorting rules.
             Returns a limited amount of results defined by the specific DB manager.
                 * conditions {list} conditions to all results to be obtained
-                * sorting_rules {list} field and direction of sorting results
+                * sorting_rules {list} stantard sorting rules in the way: [ ['fieldname1','ASC],['fieldname2','DESC'] ]
                 * {list} Return results.
         """
         pass
@@ -67,7 +67,7 @@ class AbstractManager(object):
         """
             Makes a Request to the DB manager with a list of conditions, sorting rules and maximum number of results 
                 * conditions {list} conditions to all results to be obtained
-                * sorting_rules {list} field and direction of sorting results
+                * sorting_rules {list} stantard sorting rules in the way: [ ['fieldname1','ASC],['fieldname2','DESC'] ]
                 * maxRows {int} maximum number of results to be obtained
                 * {list} Return results.
         """

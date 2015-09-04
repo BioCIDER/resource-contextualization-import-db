@@ -86,7 +86,12 @@ class SolrManager(AbstractManager):
                 if condition[0] == self.OPERATORS[0]:     # EQ      It will never have more conditions inside
                     solr_condition = condition[1]+':"'+condition[2]+'"'
                 elif condition[0] == self.OPERATORS[1]:   # NO      It CAN have more conditions inside
-                    solr_condition = 'NOT ('+condition[1]+': "'+condition[2]+'")'
+                    if ( not isinstance(condition[1], basestring)):  # If condition[1] is other condition list...
+                        solr_condition = 'NOT ('+self._get_solr_conditions_by_parent_condition(condition[1],condition)+')'    
+                    else:
+                        solr_condition = 'NOT ('+condition[1]+': "'+condition[2]+'")'
+                    
+                    
                 elif condition[0] == self.OPERATORS[2]:   # AND     It will have always more conditions inside
                     solr_condition = '('+self._get_solr_conditions(condition[1])+')'
                 elif condition[0] == self.OPERATORS[3]:   # OR.     It will have always more conditions inside
@@ -126,6 +131,8 @@ class SolrManager(AbstractManager):
                         if parent_condition is not None:
                             if parent_condition[0] == self.OPERATORS[3]:   # OR
                                 operator = ' OR '
+                            if parent_condition[0] == self.OPERATORS[1]:   # NO
+                                operator = ' AND '
                                 
                         if len(operator)==0:            # If we don't depend on parent conditions, our operator can depends on our own condition
                             # Depending on what is the next operator, we can need to join it with other auxiliar operator...
