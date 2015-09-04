@@ -1,5 +1,6 @@
 
 from abc import ABCMeta, abstractmethod
+import logging
 
 """
     Abstract class that must be implemented by all specific DataBase managers to support its interface.
@@ -7,9 +8,20 @@ from abc import ABCMeta, abstractmethod
 class AbstractManager(object):
     
     __metaclass__ = ABCMeta
-
-    @abstractmethod    
-    def __init__(self): pass
+    
+    OPERATORS = 'EQ','NO','AND','OR'
+    SORTING = 'DESC','ASC'
+    
+    logger = None
+    
+    
+    @abstractmethod       
+    def __init__(self):
+        logging.basicConfig(level=logging.ERROR)        
+        self.logger = logging.getLogger('db_logs')
+        self.logger.addHandler(logging.StreamHandler())
+        
+        pass
     
     
     @abstractmethod    
@@ -36,6 +48,40 @@ class AbstractManager(object):
         """
         pass
     
+    
+    @abstractmethod 
+    def get_data_by_conditions(self, conditions):
+        """
+            Makes a Request to the DB manager with a list of conditions.
+            Returns an unsorted and limited amount of results defined by the specific DB manager.
+                * conditions {list} conditions to all results to be obtained
+                * {list} Return results.
+        """
+        pass
+    
+    @abstractmethod 
+    def get_data_by_conditions_sorting(self, conditions, sorting_rules):
+        """
+            Makes a Request to the DB manager with a list of conditions and sorting rules.
+            Returns a limited amount of results defined by the specific DB manager.
+                * conditions {list} conditions to all results to be obtained
+                * sorting_rules {list} stantard sorting rules in the way: [ ['fieldname1','ASC],['fieldname2','DESC'] ]
+                * {list} Return results.
+        """
+        pass
+        
+    @abstractmethod 
+    def get_data_by_conditions_full(self, conditions, sorting_rules, maxRows):
+        """
+            Makes a Request to the DB manager with a list of conditions, sorting rules and maximum number of results 
+                * conditions {list} conditions to all results to be obtained
+                * sorting_rules {list} stantard sorting rules in the way: [ ['fieldname1','ASC],['fieldname2','DESC'] ]
+                * maxRows {int} maximum number of results to be obtained
+                * {list} Return results.
+        """
+        pass
+        
+    
     @abstractmethod 
     def _get_data_by(self, condition):
         """
@@ -49,6 +95,14 @@ class AbstractManager(object):
     def delete_all_data(self):
         """
             Delete all the data from DB
+        """
+        pass
+    
+    @abstractmethod 
+    def delete_data_by_conditions(self, conditions):
+        """
+            Executes a delete statement to the DB manager with a list of conditions.
+                * conditions {list} conditions imposed to all rows to be deleted
         """
         pass
           
