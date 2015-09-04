@@ -9,6 +9,8 @@ class AbstractManager(object):
     __metaclass__ = ABCMeta
     
     OPERATORS = 'EQ','NO','AND','OR'
+    SORTING = 'DESC','ASC'
+    
     
     @abstractmethod    
     def __init__(self): pass
