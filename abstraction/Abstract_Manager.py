@@ -17,9 +17,17 @@ class AbstractManager(object):
     
     @abstractmethod       
     def __init__(self):
-        logging.basicConfig(level=logging.ERROR)        
+        global logger
         self.logger = logging.getLogger('db_logs')
-        self.logger.addHandler(logging.StreamHandler())
+        if (len(self.logger.handlers) == 0):           # We only create a StreamHandler if there aren't another one
+            streamhandler = logging.StreamHandler()
+            streamhandler.setLevel(logging.ERROR)
+            self.logger.setLevel(logging.ERROR)
+            # create formatter
+            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            streamhandler.setFormatter(formatter)
+            # add formatter to ch
+            self.logger.addHandler(streamhandler)
         
         pass
     
