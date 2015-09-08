@@ -412,6 +412,8 @@
   <field name="link" type="string" multiValued="false"/>
   <field name="manu" type="strings"/>
   <field name="name" type="strings"/>
+  <field name="source" type="string" multiValued="false"/>
+  <field name="insertion_date" type="tdate"/>
   <field name="notes" type="string" multiValued="false"/>
   <field name="payloads" type="strings"/>
   <field name="popularity" type="tlongs"/>
