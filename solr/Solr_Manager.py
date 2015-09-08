@@ -147,8 +147,8 @@ class SolrManager(AbstractManager):
                 self.logger.debug(solr_total_condition)
                 return solr_total_condition
             except Exception as e:
-                print ("Exception trying to convert standard conditions to SolR conditions")
-                print (e)
+                self.logger.error("Exception trying to convert standard conditions to SolR conditions")
+                self.logger.error(e)
                 return None
         else:
             return '*:*'
@@ -174,8 +174,8 @@ class SolrManager(AbstractManager):
                  
                 return solr_rules
             except Exception as e:
-                print ("Exception trying to convert standard conditions to SolR conditions")
-                print (e)
+                self.logger.error("Exception trying to convert standard conditions to SolR conditions")
+                self.logger.error(e)
                 return None
         else:
             return None  
