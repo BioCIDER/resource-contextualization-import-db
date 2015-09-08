@@ -4,6 +4,8 @@ import re
 import sys
 import logging
 
+from pprint import pprint
+
 # Importing abstract layer
 sys.path.insert(0, '../../resource-contextualization-import-db/abstraction')
 
@@ -210,7 +212,7 @@ class SolrManager(AbstractManager):
                 * conditions {list} conditions to all results to be obtained
                 * {list} Return unsorted results, with a maximum of 5000.
         """
-        return self.get_data_by_conditions_full(self, conditions, None, 5000)
+        return self.get_data_by_conditions_full(conditions, None, 5000)
     
     def get_data_by_conditions_sorting(self, conditions, sorting_rules):
         """
@@ -219,7 +221,7 @@ class SolrManager(AbstractManager):
                 * sorting_rules {list} field and direction of sorting results
                 * {list} Return results, with a maximum of 5000.
         """
-        return self.get_data_by_conditions_full(self, conditions, sorting_rules ,5000)
+        return self.get_data_by_conditions_full(conditions, sorting_rules ,5000)
        
     def get_data_by_conditions_full(self, conditions, sorting_rules, maxRows):
         """
@@ -254,9 +256,7 @@ class SolrManager(AbstractManager):
                 return None
         else:
             return None
-        
-    
-        
+            
     
     def _get_data_by(self, condition):
         """
@@ -276,6 +276,38 @@ class SolrManager(AbstractManager):
                 return None
         else:
             return None
+    
+    
+    
+    def count_data_by_conditions(self, conditions):
+        """
+            Makes a count request to the local Solr Server with a list of conditions.
+            It's much faster than count a set of results.
+                * conditions {list} conditions to all results to be counted
+                * {int} results number.
+        """
+        my_instance = self._get_instance()
+        if my_instance is not None:
+            try:
+                self.logger.debug('> count data by conditions:')
+                self.logger.debug(conditions)
+                
+                solr_conditions = self._get_solr_conditions(conditions)               
+                self.logger.debug('solr conditions to apply:')
+                self.logger.debug(solr_conditions)
+                
+                resultsLocal = my_instance.search(q=solr_conditions)
+                # Very useful funtion to dump any object
+                # pprint(vars(resultsLocal))
+                
+                return resultsLocal.hits
+            except Exception as e:
+                self.logger.error("Exception trying to count Solr data")
+                self.logger.error(e)
+                return None
+        else:
+            return None
+        
     
     
     def delete_all_data(self):
@@ -311,6 +343,7 @@ class SolrManager(AbstractManager):
                 self.logger.debug(solr_conditions)
         
                 my_instance.delete(q=solr_conditions)
+
             except Exception as e:
                 self.logger.error("Exception trying to delete Solr data")
                 self.logger.error(e)
@@ -320,17 +353,25 @@ class SolrManager(AbstractManager):
     def insert_data(self, mydata):
         """
             Adds to our database all variables passed as arguments
-            * mydata {list} 
+            * mydata {list}
+            * {boolean} Return operation result.
+            
         """
         my_instance = self._get_instance()
         if my_instance is not None:
             try:
-                my_instance.add([
+                result = my_instance.add([
                     mydata
                 ])
+                if ('<int name="status">0</int>' in result):
+                    return True
+                else:
+                    return False
             except Exception as e:
                 self.logger.error("Exception trying to access Solr instance:")
                 self.logger.error(e)
+                return False
+        return False
     
     
     
