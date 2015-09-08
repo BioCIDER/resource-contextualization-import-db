@@ -98,6 +98,15 @@ class AbstractManager(object):
         """
         pass
     
+    @abstractmethod 
+    def count_data_by_conditions(self, conditions):
+        """
+            Makes a count request to the DB manager with a list of conditions.
+            It's much faster than count a set of results.
+                * conditions {list} conditions to all results to be counted
+                * {int} results number.
+        """
+        pass
             
     @abstractmethod 
     def delete_all_data(self):
@@ -118,7 +127,9 @@ class AbstractManager(object):
     def insert_data(self, var):
         """
             Adds to our database all variables passed as arguments
-            * var {list} 
+            * var {list}
+            * {boolean} Return operation result.
+
         """
         pass
         
