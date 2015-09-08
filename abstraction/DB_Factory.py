@@ -38,10 +38,10 @@ class DBFactory(object):
             * {AbstractManager} Return asked DB manager.
         """
         
-        return get_specific_db_manager(self,DB_TYPE,None)
+        return get_specific_db_manager_and_schema(self,DB_TYPE,None)
       
         
-    def get_specific_db_manager(self,DB_TYPE,ds_name):
+    def get_specific_db_manager_and_schema(self,DB_TYPE,ds_name):
         """
             Returns one instance of a database manager. None if there is any problem creating it.
             * DB_TYPE {string} one of the DB suppliers included in _DB_TYPES.
@@ -61,9 +61,9 @@ class DBFactory(object):
             None if there is any problem creating it.
             * ds_name {string} specific database name to use. None to use default.
             * {AbstractManager} Return current DB manager.
+
         """  
-        
-        return self.get_specific_db_manager(_INSTANCE_TYPE, ds_name)
+        return self.get_specific_db_manager_and_schema(_INSTANCE_TYPE, ds_name)
        
        
     
@@ -76,7 +76,7 @@ def example():
     my_db_factoy = DBFactory()
     print ("DB Factoy:")
     print (my_db_factoy)
-    dbmanager = my_db_factoy.get_my_db_manager()
+    dbmanager = my_db_factoy.get_default_db_manager('eventsData')
     print ("DB Manager:")
     print (dbmanager)
     ourdata = dbmanager.get_all_data()
