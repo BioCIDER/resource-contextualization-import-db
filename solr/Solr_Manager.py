@@ -383,8 +383,8 @@ def example():
         Executes one example showing all data from our solr DB.
         
     """
-    from SolrManager import SolrManager
-    solrmanager = SolrManager()
+    from Solr_Manager import SolrManager
+    solrmanager = SolrManager('test_core')
     # ourdata = solrmanager.get_all_data()
     ourdata = solrmanager.get_data_by('disease')
     print (ourdata)
