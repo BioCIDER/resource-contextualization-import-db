@@ -14,7 +14,7 @@ class TestSolrDB(unittest.TestCase):
 
     def setUp(self):
         self.dbFactory = DBFactory()
-        self.dbManager = self.dbFactory.get_specific_db_manager('SOLR','test_core')
+        self.dbManager = self.dbFactory.get_specific_db_manager_and_schema('SOLR','test_core')
 
 
     def test_insertion(self):

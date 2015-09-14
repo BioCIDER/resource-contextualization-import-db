@@ -1,6 +1,7 @@
 
 from abc import ABCMeta, abstractmethod
 import logging
+from logging.handlers import TimedRotatingFileHandler
 
 """
     Abstract class that must be implemented by all specific DataBase managers to support its interface.
@@ -21,16 +22,22 @@ class AbstractManager(object):
         self.logger = logging.getLogger('db_logs')
         if (len(self.logger.handlers) == 0):           # We only create a StreamHandler if there aren't another one
             streamhandler = logging.StreamHandler()
-            streamhandler.setLevel(logging.ERROR)
-            self.logger.setLevel(logging.ERROR)
+            streamhandler.setLevel(logging.INFO)      
+            
+            filehandler = logging.handlers.TimedRotatingFileHandler('../../resource-contextualization-logs/context-db.log', when='w0')
+            filehandler.setLevel(logging.INFO)
+            
+            self.logger.setLevel(logging.INFO)
+            
             # create formatter
             formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
             streamhandler.setFormatter(formatter)
-            # add formatter to ch
+            filehandler.setFormatter(formatter)
+            # add formatters to logger
             self.logger.addHandler(streamhandler)
-        
-        pass
+            self.logger.addHandler(filehandler)
     
+        pass
     
     @abstractmethod    
     def __str__(self): pass
