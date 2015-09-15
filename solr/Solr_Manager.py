@@ -40,7 +40,7 @@ class SolrManager(AbstractManager):
         """
         super(SolrManager, self).__init__()
         if ds_name is None:
-            self.url = 'http://localhost:8983/solr/eventsData'
+            self.url = 'http://localhost:8983/solr/contextData'
         else:
             self.url = 'http://localhost:8983/solr/'+ds_name
         self.timeout = 10
