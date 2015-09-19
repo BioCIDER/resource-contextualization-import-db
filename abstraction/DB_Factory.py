@@ -76,7 +76,7 @@ def example():
     my_db_factoy = DBFactory()
     print ("DB Factoy:")
     print (my_db_factoy)
-    dbmanager = my_db_factoy.get_default_db_manager('eventsData')
+    dbmanager = my_db_factoy.get_default_db_manager('contextData')
     print ("DB Manager:")
     print (dbmanager)
     ourdata = dbmanager.get_all_data()
