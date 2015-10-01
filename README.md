@@ -32,6 +32,54 @@ One user of this abstraction layer only should care about methods in this class 
 
 One of those classes is our SolrManager class into /solr folder.
 
+## SolR installation
+
+
+To configure SolR properly, you will need to put into your server folder some files provided in this repository.
+
+From solr\schema folder:
+
+* managed-schema.xml
+
+From solr\config folder:
+
+* solrconfig.xml 
+* synonyms.txt 
+* stopwords.txt 
+
+Also, you will need to modify this file:
+
+> [solr-folder]/server/etc/webdefault.xml
+
+Introducing next code at the end in order to enable SolR to manage CORS requests:
+
+ ```
+ 
+<filter>
+  <filter-name>cross-origin</filter-name>
+  <filter-class>org.eclipse.jetty.servlets.CrossOriginFilter</filter-class>
+  <init-param>
+    <param-name>allowedOrigins</param-name>
+    <param-value>*</param-value>
+  </init-param>
+  <init-param>
+    <param-name>allowedMethods</param-name>
+    <param-value>GET,POST,OPTIONS,DELETE,PUT,HEAD</param-value>
+  </init-param>
+  <init-param>
+    <param-name>allowedHeaders</param-name>
+    <param-value>origin, content-type, accept</param-value>
+  </init-param>
+</filter>
+
+  <filter-mapping>
+  <filter-name>cross-origin</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+</web-app>
+
+```
+
 ## Contributing
 
 Please submit all issues and pull requests to the [elixirhub/resource-contextualization-import-db](https://github.com/elixirhub/resource-contextualization-import-db/) repository!
