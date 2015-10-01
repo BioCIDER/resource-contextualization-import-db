@@ -401,23 +401,23 @@
   <field name="_version_" type="long" indexed="true" stored="true"/>
   <field name="banks" type="strings"/>
   <field name="cat" type="strings"/>
-  <field name="city" type="string" multiValued="false" stored="true"/>
-  <field name="country" type="string" multiValued="false" stored="true"/>
+  <field name="city" type="text_general" multiValued="false" stored="true"/>
+  <field name="country" type="text_general" multiValued="false" stored="true"/>
   <field name="end" type="tdates" multiValued="false" stored="true"/>
   <field name="features" type="strings"/>
-  <field name="field" type="string" multiValued="true" indexed="true" required="true" stored="true"/>
-  <field name="audience" type="string" multiValued="true" indexed="true" required="false" stored="true"/>
+  <field name="field" type="text_general" multiValued="true" indexed="true" required="true" stored="true"/>
+  <field name="audience" type="text_general" multiValued="true" indexed="true" required="false" stored="true"/>
   <field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
   <field name="inStock" type="booleans"/>
   <field name="includes" type="strings"/>
   <field name="link" type="string" multiValued="false" stored="true"/>
   <field name="manu" type="strings"/>
   <field name="name" type="strings" stored="true"/>
-  <field name="source" type="string" multiValued="false" stored="true"/>
-  <field name="resource_type" type="string" multiValued="true" required="false" stored="true"/>
+  <field name="source" type="string" indexed="true" multiValued="false" stored="true"/>
+  <field name="resource_type" type="text_general" indexed="true" multiValued="true" required="false" stored="true"/>
   <field name="insertion_date" type="tdate" stored="true"/>
-  <field name="created" type="tdate" stored="true"/>
-  <field name="notes" type="string" multiValued="false" stored="true"/>
+  <field name="created" type="tdate" indexed="true" stored="true"/>
+  <field name="description" type="text_general" indexed="true" multiValued="false" stored="true"/>
   <field name="payloads" type="strings"/>
   <field name="popularity" type="tlongs"/>
   <field name="price" type="tdoubles"/>
@@ -425,7 +425,7 @@
   <field name="start" type="tdates" multiValued="false" stored="true"/>
   <field name="store" type="strings"/>
   <field name="test" type="strings"/>
-  <field name="title" type="string" multiValued="false" stored="true"/>
+  <field name="title" type="text_general" multiValued="false" indexed="true" stored="true"/>
   <field name="weight" type="tdoubles"/>
   <dynamicField name="*_txt_en_split_tight" type="text_en_splitting_tight" indexed="true" stored="true"/>
   <dynamicField name="*_descendent_path" type="descendent_path" indexed="true" stored="true"/>
@@ -500,5 +500,10 @@
   <dynamicField name="*_d" type="double" indexed="true" stored="true"/>
   <dynamicField name="*_p" type="location" indexed="true" stored="true"/>
   <dynamicField name="*_c" type="currency" indexed="true" stored="true"/>
+  <!--
+  <field name="combinedSearch" type="string" indexed="true" stored="true" multiValued="true"/>
+
+<copyField source="*" dest="combinedSearch"/>
   <copyField source="*" dest="_text_"/>
+-->
 </schema>
