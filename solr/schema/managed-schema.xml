@@ -410,7 +410,7 @@
   <field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
   <field name="inStock" type="booleans"/>
   <field name="includes" type="strings"/>
-  <field name="link" type="string" multiValued="false" stored="true" indexed="true"/>
+  <field name="link" type="text_general" multiValued="false" stored="true" indexed="true"/>
   <field name="manu" type="strings"/>
   <field name="name" type="strings" stored="true"/>
   <field name="source" type="string" indexed="true" multiValued="false" stored="true"/>
