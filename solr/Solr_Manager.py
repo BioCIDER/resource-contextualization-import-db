@@ -84,9 +84,28 @@ class SolrManager(AbstractManager):
             try:
                 self.logger.debug ('Condition: ')
                 self.logger.debug (condition)
+                
                 # WE HAVE TO SEE IF EQ, NO OR OTHERS CAN HAVE MORE CONDITIONS INSIDE THEM
-                if condition[0] == self.OPERATORS[0]:     # EQ      It will never have more conditions inside
-                    solr_condition = condition[1]+':"'+condition[2]+'"'
+                if condition[0] == self.OPERATORS[0]:     # EQ
+                                        # It never has more conditions inside, but it can receive a list of values!
+                    if ( isinstance(condition[2], basestring)):
+                        solr_condition = condition[1]+':"'+condition[2]+'"'
+                    else:   # We have a list of terms
+                        listOfTerms = condition[2]
+                        partial_solr_condition = ""
+                        for conditionTerm in listOfTerms:
+                            if len(partial_solr_condition)>1:
+                                #commented lines are a different kind of condition, not exclusive
+                                #partial_solr_condition = partial_solr_condition+" AND "+condition[1]+':"'+conditionTerm+'" '
+                                partial_solr_condition = partial_solr_condition+' AND "'+conditionTerm+'" '
+
+                            else:
+                                #partial_solr_condition = condition[1]+':"'+conditionTerm+'" '
+                                partial_solr_condition = condition[1]+':("'+conditionTerm+'" '
+
+                        #solr_condition = '('+partial_solr_condition+')'
+                        solr_condition = partial_solr_condition+')'   
+                        
                 elif condition[0] == self.OPERATORS[1]:   # NO      It CAN have more conditions inside
                     if ( not isinstance(condition[1], basestring)):  # If condition[1] is other condition list...
                         solr_condition = 'NOT ('+self._get_solr_conditions_by_parent_condition(condition[1],condition)+')'    
@@ -103,7 +122,7 @@ class SolrManager(AbstractManager):
                 self.logger.debug (solr_condition)
                 return solr_condition
             except Exception as e:
-                self.logger.error("Exception trying to convert one standard condition to SolR condition")
+                self.logger.error("Exception trying to convert one standard condition to SolR condition :"+format(sys.exc_info()[-1].tb_lineno))
                 self.logger.error(e)
                 return None
         else:
