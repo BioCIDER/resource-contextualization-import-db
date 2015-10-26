@@ -38,7 +38,21 @@ class DBFactory(object):
             * {AbstractManager} Return asked DB manager.
         """
         
-        return get_specific_db_manager_and_schema(self,DB_TYPE,None)
+        return self.get_specific_db_manager_and_schema(DB_TYPE,None)
+    
+    
+    def get_specific_db_manager_with_user(self,DB_TYPE, username, passw):
+        """
+            Returns one instance of a database manager pointing to the default dataset/database.
+            None if there is any problem creating it.
+            * DB_TYPE {string} one of the DB suppliers included in _DB_TYPES.
+            * username {string} specific username to use.
+            * passw {string} password for the username.
+            * {AbstractManager} Return asked DB manager.
+        """
+        
+        return self.get_specific_db_manager_and_schema_and_user(DB_TYPE,None, username, passw)
+    
       
         
     def get_specific_db_manager_and_schema(self,DB_TYPE,ds_name):
@@ -49,8 +63,21 @@ class DBFactory(object):
             * {AbstractManager} Return asked DB manager.
         """        
 
+        return self.get_specific_db_manager_and_schema_and_user(DB_TYPE, ds_name, None, None)
+        
+        
+    def get_specific_db_manager_and_schema_and_user(self,DB_TYPE,ds_name, username, passw):
+        """
+            Returns one instance of a database manager. None if there is any problem creating it.
+            * DB_TYPE {string} one of the DB suppliers included in _DB_TYPES.
+            * db_name {string} specific database name to use. None to use default.
+            * username {string} specific username to use.
+            * passw {string} password for the username.
+            * {AbstractManager} Return asked DB manager.
+        """        
+
         if DB_TYPE == _DB_TYPES[0]:
-            return SolrManager(ds_name)
+            return SolrManager(ds_name, username, passw)
         else:
             return None   
     
@@ -64,6 +91,19 @@ class DBFactory(object):
 
         """  
         return self.get_specific_db_manager_and_schema(_INSTANCE_TYPE, ds_name)
+    
+    
+    def get_default_db_manager_with_username(self, ds_name, username, passw):
+        """
+            Returns one instance of our current database manager pointing to one specific dataset/database.
+            None if there is any problem creating it.
+            * ds_name {string} specific database name to use. None to use default.
+            * username {string} specific username to use.
+            * passw {string} password for the username.
+            * {AbstractManager} Return current DB manager.
+
+        """  
+        return self.get_specific_db_manager_and_schema_and_user(_INSTANCE_TYPE, ds_name, username, passw)
        
        
     

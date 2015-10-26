@@ -33,16 +33,22 @@ class SolrManager(AbstractManager):
             self._solrLocal =  None 
     
     
-    def __init__(self, ds_name):
+    def __init__(self, ds_name, username, passw):
         """
             Initialization function.
             * db_name {string} specific core name to use. None to use default.
         """
         super(SolrManager, self).__init__()
+        
+        authString = ''
+        
+        if username is not None and passw is not None :
+            authString = username+':'+passw+'@'
+
         if ds_name is None:
-            self.url = 'http://localhost:8983/solr/contextData'
+            self.url = 'http://'+authString+'localhost:8983/solr/contextData'
         else:
-            self.url = 'http://localhost:8983/solr/'+ds_name
+            self.url = 'http://'+authString+'localhost:8983/solr/'+ds_name
         self.timeout = 10
         self._create_instance()
     
