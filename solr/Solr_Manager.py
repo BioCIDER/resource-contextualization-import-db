@@ -1,5 +1,8 @@
 from __future__ import print_function
+
 import pysolr
+# import requests # it's the internal class for connections used by pysolr.
+import urllib2
 import re
 import sys
 import logging
@@ -25,8 +28,11 @@ class SolrManager(AbstractManager):
         """
         
         try:
-            self._solrLocal = pysolr.Solr(self.getUrl(), timeout=self.getTimeout())
-
+	    self._solrLocal = pysolr.Solr(self.getUrl(), timeout=self.getTimeout())
+            mysession = self._solrLocal.session	   # We obtain the local session in order to change its behavour
+            #mysession.auth = auth  # Authentication can be done also like this: auth = ('user', 'pass')
+            # For some reason, the certificate cannot be validated from our own server! validation has to be disabled in this case  
+            mysession.verify = False
         except Exception as e:
             self.logger.critical("Exception trying to access Solr instance:")
             self.logger.critical(e)
@@ -40,16 +46,23 @@ class SolrManager(AbstractManager):
         """
         super(SolrManager, self).__init__()
         
-        authString = ''
-        
+
+	authString = ''
+
         if username is not None and passw is not None :
             authString = username+':'+passw+'@'
 
         if ds_name is None:
-            self.url = 'http://'+authString+'localhost:8983/solr/contextData'
+#       	   self.url = 'https://biocider.org:8983/solr/contextData'     
+	   self.url = 'https://'+authString+'biocider.org:8983/solr/contextData' 
+	   # self.url = 'https://'+authString+'localhost:8983/solr/contextData'
         else:
-            self.url = 'http://'+authString+'localhost:8983/solr/'+ds_name
-        self.timeout = 10
+	   #self.url = 'https://biocider.org:8983/solr/'+ds_name              
+           self.url = 'https://'+authString+'biocider.org:8983/solr/'+ds_name
+	   # self.url = 'https://'+authString+'localhost:8983/solr/'+ds_name
+        
+
+	self.timeout = 10
         self._create_instance()
     
     
